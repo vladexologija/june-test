@@ -5,8 +5,10 @@ describe('Lisp code parser', () => {
     const lispCode = "(first (list 1 (+ 2 3) 9))"
   
     const ast = parseAST(lispCode)
+    const result = execute(JSON.parse(JSON.stringify(ast)))
   
     expect(ast).toEqual([ 'first', [ 'list', '1', [ '+', '2', '3' ], '9' ] ])
+    expect(result).toEqual(1)
   })
 
   it('should parse a correct call', () => {
@@ -65,8 +67,10 @@ describe('Lisp code parser', () => {
     const lispCode = "(+ (* 2 (- 8 3)) (/ 12 3))"
   
     const ast = parseAST(lispCode)
-    
-    expect(ast).toEqual([ '+', [ '*', '2', [ '-', '8', '3' ] ], [ '/', '12', '3' ] ])    
+    const result = execute(JSON.parse(JSON.stringify(ast)))
+
+    expect(ast).toEqual([ '+', [ '*', '2', [ '-', '8', '3' ] ], [ '/', '12', '3' ] ])   
+    expect(result).toEqual(14) 
   })
 
   it('should throw an error if we have an unclosed bracket', () => {

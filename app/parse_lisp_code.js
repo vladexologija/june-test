@@ -45,15 +45,15 @@ function parse(tokens, level = 0) {
   }
 }
 
-export function execute(ast) {
-  const numericOperations = {
-    '*': (sum, item) => sum * item,
-    '/': (sum, item) => sum / item,
-    '+': (sum, item) => sum + item,
-    '-': (sum, item) => sum - item,
-    '>': (sum, item) => sum > item,
-  }
+const numericOperations = {
+  '*': (sum, item) => sum * item,
+  '/': (sum, item) => sum / item,
+  '+': (sum, item) => sum + item,
+  '-': (sum, item) => sum - item,
+  '>': (sum, item) => sum > item,
+}
 
+export function execute(ast) {
   if (Array.isArray(ast)) {
     const operator = ast[0]
     ast.shift()
@@ -71,9 +71,9 @@ export function execute(ast) {
       case 'max':        
         return ast.reduce((sum, item) => Math.max(sum, execute(item)), -999999999999)  
       case 'first':        
-        return ast[0]  
+        return execute(ast[0])[0]
       case 'list':
-        return ast.map(arg => execute(arg));
+        return ast.map((arg) => execute(arg));
       default:
         if (operator in numericOperations) {
           const func = numericOperations[operator]
