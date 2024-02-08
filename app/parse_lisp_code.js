@@ -4,6 +4,8 @@
 // it could return a nested array like ["first", ["list", 1, ["+", 2, 3], 9]].
 
 // add space arround brackets so we don't end up with e.g (list as a token
+export const memory = {}
+
 function tokenize(code) {
   const symbols = ['(',')']
   
@@ -41,6 +43,49 @@ function parse(tokens, level = 0) {
     if (level === 0) throw new SyntaxError('Incorrect list syntax')
     return token
   }
+}
+
+export function execute(ast) {
+  const numericOperations = {
+    '*': (sum, item) => sum * item,
+    '/': (sum, item) => sum / item,
+    '+': (sum, item) => sum + item,
+    '-': (sum, item) => sum - item,
+    '>': (sum, item) => sum > item,
+  }
+
+  if (Array.isArray(ast)) {
+    const operator = ast[0]
+    ast.shift()
+    
+    switch (operator) {
+      case 'if':        
+        const condition = ast[0]
+        const trueCondition = ast[1]
+        const falseCondition = ast[2]
+
+        return execute(condition)  ? execute(trueCondition) : execute(falseCondition)
+      case 'setq':
+        memory[ast[0]] = execute(ast[1])
+        return memory[ast[0]] 
+      case 'max':        
+        return ast.reduce((sum, item) => Math.max(sum, execute(item)), -999999999999)  
+      case 'first':        
+        return ast[0]  
+      case 'list':
+        return ast.map(arg => execute(arg));
+      default:
+        if (operator in numericOperations) {
+          const func = numericOperations[operator]
+          return ast.map(item => execute(item)).reduce((sum, item) => func(sum, item))
+        } else {
+          throw new SyntaxError('Unsupported operation')
+        }
+    }
+  } else {
+    return (!isNaN(ast)) ? parseInt(ast) :  parseInt(memory[ast]) ?? ast
+  }
+
 }
 
 export function parseAST(lispCode) {
