@@ -1,4 +1,4 @@
-# Lisp Code Parser
+# Lisp Code Parser ![tests](https://github.com/vladexologija/june-test/actions/workflows/node.js.yml/badge.svg)
 
 A simple utility for parsing Lisp code into an abstract syntax tree (AST). The solution can be found in `app/parse_lisp_code.js` and test in `app/parse_lisp_code.test.js`
 
